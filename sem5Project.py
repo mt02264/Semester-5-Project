@@ -212,7 +212,7 @@ class imagePreProcess:
 
 
 
-def project(fileName, imageName, translate=False, meaning=False, thesa=False, dest="en"):
+def project(fileName, imageName, translate=False, meaning=False, thesa=False, dest="en", form="text"):
     fileToWrite = open(fileName, "w+")
     fileToWrite.close()
     new = imagePreProcess(imageName)
@@ -220,21 +220,27 @@ def project(fileName, imageName, translate=False, meaning=False, thesa=False, de
     fileToWrite = open(fileName, "a")
     fileToWrite.write(result)
     if translate==True:
-        fileToWrite.write("\n\n\n=======================================================================\n\n\n")
-        fileToWrite.write("The above code's translation in " + dest + " is given below:")
-        fileToWrite.write("\n\n\n=======================================================================\n\n\n")
         translator = Translator()
         translatedResult = translator.translate(result, dest=dest)
-        fileToWrite.write(translatedResult.text)
-        fileToWrite.write("\n\n\n=======================================================================\n\n\n")
-        fileToWrite.write("The above code's translation in the original language is given below:")
-        fileToWrite.write("\n\n\n=======================================================================\n\n\n")
         orig = translator.translate(translatedResult.text, dest="en")
-        fileToWrite.write(orig.text)
-        img = Image.new('RGB', (600, 300), color = 'white')
-        d = ImageDraw.Draw(img)
-        d.text((100,100), orig.text, fill=(0,0,0))
-        img.save('resulted.png')
+        if form=="text":
+            fileToWrite.write("\n\n\n=======================================================================\n\n\n")
+            fileToWrite.write("The above code's translation in " + dest + " is given below:")
+            fileToWrite.write("\n\n\n=======================================================================\n\n\n")
+            fileToWrite.write(translatedResult.text)
+            fileToWrite.write("\n\n\n=======================================================================\n\n\n")
+            fileToWrite.write("The above code's translation in the original language is given below:")
+            fileToWrite.write("\n\n\n=======================================================================\n\n\n")        
+            fileToWrite.write(orig.text)
+        if form == "image":
+            img = Image.new('RGB', (1280, 720), color = 'white')
+            fnt = ImageFont.truetype('/usr/share/fonts/truetype/msttcorefonts/Arial.ttf',20)
+            d = ImageDraw.Draw(img) 
+            ko = translatedResult.text.split("\n")
+            for j in range(len(ko)):
+                d.text((2, j*20), ko[j], font=fnt, fill=(0,0,0))
+            img.save('translation.png')
+
     if meaning==True:
         result = result.split(" ")
         print("len result "+ str(len(result)))
@@ -250,26 +256,36 @@ def project(fileName, imageName, translate=False, meaning=False, thesa=False, de
               indexMean = random.randint(0, len(result)-1)
               print(indexMean)
               result = result[indexMean]
-            fileToWrite.write(result)
             index = dfThes.meaning(result)
-            fileToWrite.write("\nmeaning: \n")
+            if form=="text":
+                fileToWrite.write(result)
+                fileToWrite.write("\nmeaning: \n")
             print(index)
+            k=0
             if index!=None:
                 for i in index:
+                  if form=="image":
+                    img = Image.new('RGB', (600, 300), color = 'white')
+                    d = ImageDraw.Draw(img)
+                    d.text((2,0), result, fill=(0,0,0))
+                    d.text((2,20), i, fill=(0,0,0))
                   meaningWord = index[i]
-                  fileToWrite.write("\n")
-                  fileToWrite.write(i)
-                  fileToWrite.write(": ")
-                  img = Image.new('RGB', (600, 300), color = 'white')
-                  d = ImageDraw.Draw(img)
-                  for j in meaningWord:
-                      fileToWrite.write(j)
-                      fileToWrite.write(", ")
-                      d.text((100,100), j, fill=(0,0,0))
-            img.save('resulted.png')
+                  if form=="text":
+                    fileToWrite.write("\n\n")
+                    fileToWrite.write(i)
+                    fileToWrite.write(": ")
+                  for j in range(len(meaningWord)):
+                      if form=="text":
+                        fileToWrite.write(meaningWord[j])
+                        fileToWrite.write(", ")
+                      if form=="image":
+                        d.text((2,(j+2)*20), meaningWord[j], fill=(0,0,0))
+                  if form=="image":
+                    img.save('resulted'+str(k)+'.png')
+                  k+=1
     fileToWrite.close()
 
-project(fileName="newFile.txt", imageName="download.jpeg", meaning=True, dest='la') 
+project(fileName="newFile.txt", imageName="common.jpg", meaning=True, form="image") 
 
 
 
