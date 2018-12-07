@@ -3,7 +3,6 @@ from PIL import ImageDraw, ImageFont, Image
 from googletrans import Translator
 import random
 from PyDictionary import PyDictionary
-import pandas as pd
 import pytesseract
 import enchant
 import numpy as np
@@ -209,6 +208,26 @@ class imagePreProcess:
         return self.textResult
     def __str__(self):
         return self.textResult
+#=======================================================================================
+    # def trainedModel(self, model):
+    #     # define the two output layer names for the EAST detector model that
+    #     # we are interested -- the first is the output probabilities and the
+    #     # second can be used to derive the bounding box coordinates of text
+    #     layerNames = [
+    #         "feature_fusion/Conv_7/Sigmoid",
+    #         "feature_fusion/concat_3"]
+    #     # load the pre-trained EAST text detector
+    #     print("[INFO] loading EAST text detector...")
+    #     print(model)
+    #     print(type(model))
+    #     net = cv2.dnn.readNet(model)
+    #     # construct a blob from the image and then perform a forward pass of
+    #     # the model to obtain the two output layer sets
+    #     blob = cv2.dnn.blobFromImage(image, 1.0, (W, H),
+    #         (123.68, 116.78, 103.94), swapRB=True, crop=False)
+    #     net.setInput(blob)
+    #     (scores, geometry) = net.forward(layerNames)
+#======================================================
 
 
 
@@ -285,36 +304,22 @@ def project(fileName, imageName, translate=False, meaning=False, thesa=False, de
                   k+=1
     fileToWrite.close()
 
-project(fileName="newFile.txt", imageName="common.jpg", meaning=True, form="image") 
+project(fileName="newFile.txt", imageName="detent.jpg", meaning=True, form="image") 
 
 
 
+#========================================================================================
+#  References:
 
-# trans = tlr.translate(g, dest='ko')
-# print(trans)
-# dfThes = PyDictionary()
-# spellCheck = enchant.Dict("en_US")
-# punctuation = [".", "?", "!", ",", "''"]
-# for text in new:
-#     if spellCheck.check(text) == False:
-#     	text = spellCheck.suggest(text)
-#     	indexMean = random.randint(0, len(text)-1)
-#     	print(indexMean)
-#     	text = text[indexMean]
-#     fileToWrite.write(text)
-#     if (operation=="meaning"):
-#         index = dfThes.meaning(text)
-#     elif (operation=="translate"):
-#         index = dfThes.translate(text, lang)
-#     fileToWrite.write("\n"+operation+": \n")
-    
-#     for i in index:
-#     	meaningWord = index[i]
-#     	fileToWrite.write("\n")
-#     	fileToWrite.write(i)
-#     	fileToWrite.write(": ")
-#     	for j in meaningWord:
-#     	    fileToWrite.write(j)
-#     	    fileToWrite.write(", ")
-# fileToWrite.close()
+#   [1] C. Wolf, J. Jolion, and F. Chassaing. Text localization,
+#       enhancement and binarization in multimedia documents.
+#       ICPR, 4:1037–1040, 2002.
 
+#   [2] Kasar, T., Kumar, J. and Ramakrishnan, A. (2018). [online] 
+#       M.cs.osakafu-u.ac.jp. Available at: 
+#       http://www.m.cs.osakafu-u.ac.jp/cbdar2007/proceedings/papers/O1-1.pdf [Accessed 7 Dec. 2018].
+
+#   [3] Rosebrock, A. (2018). OpenCV OCR and text recognition with Tesseract - PyImageSearch. [online] 
+#       PyImageSearch. Available at: https://www.pyimagesearch.com/2018/09/17/opencv-ocr-and-text-recognition-with-tesseract/ 
+#       [Accessed 7 Dec. 2018].
+#========================================================================================
